@@ -87,10 +87,10 @@
 	#Handshake
 	token <- create_token(
  		app = "everycard",
-  		consumer_key = "oniytT8l3CbZgQaRfKm2wzG2C",
- 		consumer_secret = "URWoSTuBhBOgUBVsTgu65IJgdNC8Gt1daNWHWADWnGaX4joH5M",
- 		access_token = "1045761290696822786-6QdnhDCUcqTZihHvhA3hQDrzqfENqr",
- 		access_secret = "8i1Wgix5G0GkkD8fZmCQfDPu0WNa9Sgu0Gp7NYIGAgcA4")
+  		consumer_key = "~~~",
+ 		consumer_secret = "~~~",
+ 		access_token = "~~~",
+ 		access_secret = "~~~")
 
 	#Send tweet
 	post_tweet(paste(ref_set[index], " no. ", card_tweet[index], sep = ""), media = image_loc)
