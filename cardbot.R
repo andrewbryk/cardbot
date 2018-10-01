@@ -11,7 +11,7 @@
 	#====================
 
 		#List of English sets
-		setlist <- read.csv("C:/Users/abryk/Desktop/Hobby/PTCG/cardbot/setlist.csv")
+		setlist <- read.csv("/setlist.csv")
 
 		#Format set names
 		set_name <- as.character(setlist[, 1])
@@ -24,18 +24,6 @@
 		official_cards <- as.numeric(setlist[, 4]) #Revealed number of cards
 		numbered_cards <- as.numeric(setlist[, 3]) #Cards using X/Y scheme
 
-		#Make dummy list of HX card numbers
-		HX <- paste("H", 1:50, sep = "")
-
-	#Stretch metadata for each card
-	#====================
-
-		#Generic function to repeat elements
-		fx_name <- function(i, target) { rep(target[i], unique_cards[i]) }
-
-		#Set names
-		set_url <- unlist(lapply(1:length(set_name), fx_name, target = set_name))
-		set_ref <- unlist(lapply(1:length(set_name), fx_name, target = ref_name))
 
 		#Set totals
 		card_official <- unlist(lapply(1:length(set_name), fx_name, target = official_cards))
@@ -65,6 +53,19 @@
 
 		#Get today's card number (across sets)
 		project_start <- as.Date("2018-10-02")
+
+		#Make dummy list of HX card numbers
+		HX <- paste("H", 1:50, sep = "")
+
+	#Stretch metadata for each card
+	#====================
+
+		#Generic function to repeat elements
+		fx_name <- function(i, target) { rep(target[i], unique_cards[i]) }
+
+		#Set names
+		set_url <- unlist(lapply(1:length(set_name), fx_name, target = set_name))
+		set_ref <- unlist(lapply(1:length(set_name), fx_name, target = ref_name))
 		index <- today - project_start + 1		
 
 	#Get today's card
@@ -72,7 +73,7 @@
 
 		#Make URL & target directory
 		target <- paste("https://www.serebii.net/card/", set_url[index], "/", card_url[index], ".jpg", sep = "")
-		image_loc <- "C:/Users/abryk/Desktop/Hobby/PTCG/cardbot/tmp.png"
+		image_loc <- "/tmp.png"
 
 		#Download
 		#https://stackoverflow.com/questions/29110903/how-to-download-and-display-an-image-from-an-url-in-r
