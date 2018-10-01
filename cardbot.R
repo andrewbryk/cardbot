@@ -11,7 +11,7 @@
 	#====================
 
 		#List of English sets
-		setlist <- read.csv("C:/Users/abryk/Desktop/Hobby/PTCG/cardbot/setlist.csv")
+		setlist <- read.csv("/setlist.csv")
 
 		#Format set names
 		set_name <- as.character(setlist[, 1])
@@ -53,7 +53,7 @@
 
 		#Make URL & target directory
 		target <- paste("https://www.serebii.net/card/", set, "/", card_no, ".jpg", sep = "")
-		image_loc <- "C:/Users/abryk/Desktop/Hobby/PTCG/cardbot/tmp.png"
+		image_loc <- "tmp.png"
 
 		#Download
 		#https://stackoverflow.com/questions/29110903/how-to-download-and-display-an-image-from-an-url-in-r
