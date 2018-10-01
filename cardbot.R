@@ -11,28 +11,51 @@
 	#====================
 
 		#List of English sets
-		setlist <- read.csv("/setlist.csv")
+		setlist <- read.csv("C:/Users/abryk/Desktop/Hobby/PTCG/cardbot/setlist.csv")
 
 		#Format set names
 		set_name <- as.character(setlist[, 1])
-		ref_name <- set_name
+		ref_name <- set_name #For the tweet
 		set_name <- tolower(set_name)
 		set_name <- gsub(x = set_name, pattern = " ", replacement = "")
 
 		#Format set numbers
-		set_size <- as.numeric(setlist[, 2])
+		unique_cards <- as.numeric(setlist[, 2]) #Total number of cards in set
+		official_cards <- as.numeric(setlist[, 4]) #Revealed number of cards
+		numbered_cards <- as.numeric(setlist[, 3]) #Cards using X/Y scheme
+
+		#Make dummy list of HX card numbers
+		HX <- paste("H", 1:50, sep = "")
 
 	#Stretch metadata for each card
 	#====================
 
-		#Repeat set name for each card
-		fx_name <- function(i, target) { rep(target[i], set_size[i]) }
-		cal_set <- unlist(lapply(1:length(set_name), fx_name, target = set_name))
-		ref_set <- unlist(lapply(1:length(ref_name), fx_name, target = ref_name))
+		#Generic function to repeat elements
+		fx_name <- function(i, target) { rep(target[i], unique_cards[i]) }
+
+		#Set names
+		set_url <- unlist(lapply(1:length(set_name), fx_name, target = set_name))
+		set_ref <- unlist(lapply(1:length(set_name), fx_name, target = ref_name))
+
+		#Set totals
+		card_official <- unlist(lapply(1:length(set_name), fx_name, target = official_cards))
 	
-		#Increment set number for each card
-		fx_number <- function(i) { 1:set_size[i] }
-		cal_number <- unlist(lapply(1:length(set_name), fx_number))
+		#Card numbers for URL
+		fx_number <- function(i) { 
+
+			if(numbered_cards[i] == numbered_cards[i]) { 1:numbered_cards[i] } else { #Broken in order to avoid hitting cross-set numbering
+				c(1:numbered_cards[i], tolower(HX[1:(unique_cards[i] - numbered_cards[i])])) }
+
+		}
+
+
+		card_url <- unlist(lapply(1:length(set_name), fx_number))
+
+		#Card numbers for post
+		card_tweet <- card_url
+		tmp_logic <- substr(card_tweet, start = 1, stop = 1) == "h"
+		card_tweet[tmp_logic] <- "unsequenced"
+		card_tweet[!tmp_logic] <- paste(card_tweet[!tmp_logic], card_official[!tmp_logic], sep = "/")
 
 	#Set the project clock
 	#====================
@@ -41,19 +64,15 @@
 		today <- as.Date(substr(Sys.time(), start = 1, stop = 10))
 
 		#Get today's card number (across sets)
-		project_start <- as.Date("2018-10-01")
-		index <- today - project_start + 1
-
-		#Relevant info, pass to `download.file`
-		set <- cal_set[index]
-		card_no <- cal_number[index]
+		project_start <- as.Date("2018-10-02")
+		index <- today - project_start + 1		
 
 	#Get today's card
 	#====================
 
 		#Make URL & target directory
-		target <- paste("https://www.serebii.net/card/", set, "/", card_no, ".jpg", sep = "")
-		image_loc <- "tmp.png"
+		target <- paste("https://www.serebii.net/card/", set_url[index], "/", card_url[index], ".jpg", sep = "")
+		image_loc <- "C:/Users/abryk/Desktop/Hobby/PTCG/cardbot/tmp.png"
 
 		#Download
 		#https://stackoverflow.com/questions/29110903/how-to-download-and-display-an-image-from-an-url-in-r
@@ -68,13 +87,13 @@
 	#Handshake
 	token <- create_token(
  		app = "everycard",
-  		consumer_key = ~~~,
- 		consumer_secret = ~~~
- 		access_token = ~~~,
- 		access_secret = ~~~)
+  		consumer_key = "oniytT8l3CbZgQaRfKm2wzG2C",
+ 		consumer_secret = "URWoSTuBhBOgUBVsTgu65IJgdNC8Gt1daNWHWADWnGaX4joH5M",
+ 		access_token = "1045761290696822786-6QdnhDCUcqTZihHvhA3hQDrzqfENqr",
+ 		access_secret = "8i1Wgix5G0GkkD8fZmCQfDPu0WNa9Sgu0Gp7NYIGAgcA4")
 
 	#Send tweet
-	post_tweet(paste(ref_set[index], " no. ", cal_number[index], sep = ""), media = image_loc)
+	post_tweet(paste(ref_set[index], " no. ", card_tweet[index], sep = ""), media = image_loc)
 
 
 	
